@@ -1,5 +1,5 @@
-const numRows = 40;
-const numCols = 40;
+const numRows = 80;
+const numCols = 80;
 
 function constructGridAndCanvas() {
   const canvas = []
@@ -74,17 +74,36 @@ function processGrid(grid) {
       if (isElementTrue(row, j - 1)) {
         liveNCount++;
       }
+
       if (isElementTrue(row, j + 1)) {
         liveNCount++;
       }
-      if (!isOOB(grid, i-1) && isElementTrue(grid[i-1], j)) {
-        liveNCount++;
+    
+      const topIndex = i-1;
+      if (!isOOB(grid, topIndex)) {
+        if (isElementTrue(grid[topIndex], j)) {
+          liveNCount++;
+        }
+        if (isElementTrue(grid[topIndex], j-1)) {
+          liveNCount++;
+        }
+        if (isElementTrue(grid[topIndex], j+1)) {
+          liveNCount++;
+        }
       }
 
-      if (!isOOB(grid, i+1) && isElementTrue(grid[i+1], j)) {
-        liveNCount++;
+      const bottomIndex = i+1
+      if (!isOOB(grid, bottomIndex)) {
+        if (isElementTrue(grid[bottomIndex], j)) {
+          liveNCount++;
+        }
+        if (isElementTrue(grid[bottomIndex], j-1)) {
+          liveNCount++;
+        }
+        if (isElementTrue(grid[bottomIndex], j+1)) {
+          liveNCount++;
+        }
       }
-
 
       let shouldLive = isLive;
       if (isLive) {
@@ -107,5 +126,5 @@ window.onload = function () {
     const oldGrid = grid;
     grid = processGrid(oldGrid)
     printGrid(grid, canvas, oldGrid)
-  }, 500);
+  }, 100);
 };
