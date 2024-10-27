@@ -1,53 +1,35 @@
-const numRows = 80;
-const numCols = 80;
+const squareSize = 10;
+const numRows = 100;
 
-function constructGridAndCanvas() {
-  const canvas = []
+function constructGrid() {
   const grid = []
-  const gridElement = document.getElementById('grid')
 
   for (let i = 0 ; i < numRows ; i++) {
     let row = []
-    const canvasRow = []
 
-    for (let j =0; j < numCols; j++) {
+    for (let j =0; j < numRows; j++) {
       const isLive = Math.random() > .5;
       row.push(isLive)
-
-      const div = document.createElement('div');
-
-      determineClassesForCell(div.classList, isLive, false)
-
-      gridElement.appendChild(div)
-      canvasRow.push(div);
     }
 
     grid.push(row)
-    canvas.push(canvasRow)
   }
 
-  return [grid, canvas];
+  return grid;
 }
 
+function printGrid(grid) {
+  const canvas = document.getElementById('grid');
+  const context = canvas.getContext('2d');
 
-function determineClassesForCell(classList, isLive, alreadyLive) {
-  if (isLive && alreadyLive) {
-    classList.add('live')
-  } else if (!isLive && (!alreadyLive)) {
-    classList.remove('live')
-  }
-
-  return classList;
-}
-
-function printGrid(grid, canvas, oldGrid) {
   for (let i = 0, l = grid.length; i < l; i++) {
     const row = grid[i];
     for (let j =0, lr= row.length; j < lr; j++) {
-      const element = canvas[i][j]
-      determineClassesForCell(element.classList, row[j], oldGrid[i][j])
+      context.fillStyle = row[j] ? 'white' : 'gray';
+      context.fillRect(j * squareSize, i * squareSize, squareSize, squareSize);
     }
   }
+
 }
 
 function isOOB(array, index) {
@@ -121,10 +103,16 @@ function processGrid(grid) {
 }
 
 window.onload = function () {
-  let [grid, canvas] = constructGridAndCanvas();
+  let grid = constructGrid();
+  const canvas = document.getElementById('grid')
+  canvas.setAttribute('width', numRows * squareSize);
+  canvas.setAttribute('height', numRows * squareSize);
+
   setInterval(() => {
     const oldGrid = grid;
     grid = processGrid(oldGrid)
-    printGrid(grid, canvas, oldGrid)
-  }, 100);
+    console.time('draw')
+    printGrid(grid)
+    console.timeEnd('draw')
+  }, 250);
 };
